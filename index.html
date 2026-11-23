@@ -1,0 +1,479 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ritik · AI Engineer</title>
+<meta name="description" content="Ritik — AI engineer in Pune. Agentic systems, multi-provider LLM routing, RAG and backend infrastructure.">
+<meta property="og:title" content="Ritik — AI Engineer">
+<meta property="og:description" content="Agentic systems, multi-provider LLM routing, RAG and backend infrastructure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E8ECEF;
+    --paper-2:#DDE3E8;
+    --ink:#141B26;
+    --muted:#56606E;
+    --line:#C3CBD3;
+    --cobalt:#2440E6;
+    --signal:#F2B53A;
+    --term:#141B26;
+    --term-text:#D9E0E8;
+    --term-dim:#7D8896;
+    --display:"Bricolage Grotesque", system-ui, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+    --measure:68ch;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:var(--display);font-size:1.0625rem;line-height:1.55;
+    font-variation-settings:"opsz" 14;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--cobalt);outline-offset:3px;border-radius:2px}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.25rem,4vw,3rem)}
+
+  /* ---------- nav ---------- */
+  .nav{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0}
+  .nav .me{font-weight:700;text-decoration:none;font-size:1.125rem}
+  .nav ul{display:flex;gap:1.75rem;list-style:none}
+  .nav ul a{text-decoration:none;color:var(--muted)}
+  .nav ul a:hover{color:var(--ink)}
+  @media (max-width:640px){.nav ul{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:start;padding:clamp(2.5rem,7vw,5.5rem) 0 clamp(3.5rem,8vw,6rem)}
+  .hero h1{
+    font-size:clamp(2.6rem,6vw,4.9rem);line-height:.98;letter-spacing:-.035em;
+    font-weight:750;font-variation-settings:"opsz" 96;max-width:12ch;
+  }
+  .hero .lede{margin-top:1.75rem;font-size:1.2rem;color:var(--muted);max-width:44ch}
+  .hero .lede strong{color:var(--ink);font-weight:600}
+  .ctas{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2.25rem}
+  .btn{display:inline-block;padding:.85rem 1.35rem;border-radius:999px;text-decoration:none;font-weight:600;border:2px solid var(--ink)}
+  .btn.primary{background:var(--ink);color:var(--paper)}
+  .btn.primary:hover{background:var(--cobalt);border-color:var(--cobalt)}
+  .btn.ghost:hover{background:var(--ink);color:var(--paper)}
+
+  /* the router: the one memorable thing */
+  .router{background:var(--term);color:var(--term-text);border-radius:18px;padding:1.4rem 1.4rem 1.2rem;box-shadow:0 30px 60px -30px rgba(20,27,38,.55)}
+  .router-q{font-size:.95rem;color:var(--term-dim);margin-bottom:.8rem}
+  .chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem}
+  .chip{
+    font:inherit;font-size:.92rem;cursor:pointer;color:var(--term-text);
+    background:transparent;border:1.5px solid #34404F;border-radius:999px;padding:.45rem .9rem;
+  }
+  .chip:hover{border-color:var(--term-text)}
+  .chip[aria-pressed="true"]{background:var(--signal);border-color:var(--signal);color:var(--ink);font-weight:600}
+  .trace{font-family:var(--mono);font-size:.8rem;line-height:1.75;min-height:17.5em;border-top:1px solid #2A3442;padding-top:.9rem}
+  .trace .l{display:flex;gap:.75rem;white-space:pre-wrap}
+  .trace .t{color:var(--term-dim);flex:none;width:4.2em}
+  .trace .k-route{color:var(--signal)}
+  .trace .k-ok{color:#8FD6A8}
+  .trace .k-out{color:#fff}
+  .trace a{color:#9DB0FF}
+  .cursor{display:inline-block;width:.55em;height:1em;background:var(--signal);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  @media (prefers-reduced-motion:reduce){.cursor{animation:none}}
+  .router-foot{font-size:.8rem;color:var(--term-dim);margin-top:.6rem}
+
+  @media (max-width:900px){.hero{grid-template-columns:1fr}}
+
+  /* ---------- sections ---------- */
+  section.block{padding:clamp(3.5rem,8vw,6rem) 0;border-top:1.5px solid var(--ink)}
+  .block-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:2rem;margin-bottom:2.75rem}
+  .block-head h2{font-size:clamp(1.9rem,3.6vw,2.75rem);line-height:1.05;letter-spacing:-.025em;font-weight:700;font-variation-settings:"opsz" 72}
+  .block-head p{color:var(--muted);max-width:var(--measure);font-size:1.1rem;align-self:end}
+  @media (max-width:800px){.block-head{grid-template-columns:1fr;gap:1rem}}
+
+  /* systems */
+  .systems{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-top:1px solid var(--line)}
+  .sys{padding:1.75rem 2rem 1.9rem 0;border-bottom:1px solid var(--line)}
+  .sys:nth-child(odd){padding-left:2rem;padding-right:0;border-left:1px solid var(--line)}
+  .sys.flag{grid-column:1/-1;padding:1.75rem 0 1.9rem;border-left:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2rem}
+  .sys h3{font-size:1.4rem;letter-spacing:-.015em;font-weight:650;margin-bottom:.5rem}
+  .sys.flag h3{font-size:clamp(1.6rem,2.6vw,2.1rem);line-height:1.1}
+  .sys p{color:var(--muted);max-width:56ch}
+  .sys .tags{margin-top:1rem;display:flex;flex-wrap:wrap;gap:.4rem}
+  .tag{font-size:.82rem;padding:.2rem .6rem;border-radius:6px;background:var(--paper-2);color:var(--ink)}
+  .providers{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin-top:1.1rem;font-size:.95rem}
+  .providers span{border-bottom:2px solid var(--signal)}
+  @media (max-width:800px){
+    .systems{grid-template-columns:1fr}
+    .sys,.sys:nth-child(odd){padding:1.5rem 0;border-left:0}
+    .sys.flag{grid-template-columns:1fr;gap:.5rem}
+  }
+
+  /* timeline */
+  .timeline{list-style:none;position:relative}
+  .timeline li{display:grid;grid-template-columns:11rem minmax(0,1fr);gap:2rem;padding:1.6rem 0;border-bottom:1px solid var(--line)}
+  .timeline .when{color:var(--muted);font-variant-numeric:tabular-nums}
+  .timeline h3{font-size:1.3rem;font-weight:650;letter-spacing:-.01em}
+  .timeline .org{color:var(--cobalt);font-weight:600}
+  .timeline p{color:var(--muted);margin-top:.35rem;max-width:var(--measure)}
+  .timeline li.now h3::after{content:"";display:inline-block;width:.55rem;height:.55rem;border-radius:50%;background:var(--signal);margin-left:.6rem;vertical-align:middle}
+  @media (max-width:640px){.timeline li{grid-template-columns:1fr;gap:.25rem}}
+
+  /* problem solving */
+  .ps{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:clamp(2rem,5vw,4rem);align-items:start}
+  .count{font-size:clamp(5rem,13vw,10rem);line-height:.85;font-weight:800;letter-spacing:-.05em;font-variation-settings:"opsz" 96;color:var(--cobalt)}
+  .count-cap{font-size:1.2rem;margin-top:1rem;max-width:26ch}
+  .creds{list-style:none;border-top:1px solid var(--line)}
+  .creds li{display:flex;justify-content:space-between;gap:1rem;padding:1.05rem 0;border-bottom:1px solid var(--line);align-items:baseline}
+  .creds .what{font-weight:600;font-size:1.1rem}
+  .creds .src{color:var(--muted);font-size:.95rem;text-align:right}
+  @media (max-width:800px){.ps{grid-template-columns:1fr}}
+
+  /* beyond code */
+  .evidence{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2.5rem 3rem}
+  .ev h3{font-size:1.25rem;font-weight:650;padding-bottom:.6rem;border-bottom:3px solid var(--ink);margin-bottom:.8rem}
+  .ev p{color:var(--muted)}
+
+  /* skills */
+  .stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem}
+  .stack h3{font-size:1rem;color:var(--muted);font-weight:500;margin-bottom:.6rem}
+  .stack p{font-size:1.1rem;line-height:1.6}
+
+  /* contact */
+  .contact{background:var(--ink);color:var(--paper);border-radius:28px;padding:clamp(2.5rem,6vw,4.5rem);margin:clamp(3rem,7vw,5rem) 0}
+  .contact h2{font-size:clamp(2.2rem,5vw,3.75rem);line-height:1;letter-spacing:-.03em;font-weight:750;max-width:16ch;font-variation-settings:"opsz" 96}
+  .contact p{color:#AEB8C4;margin-top:1.25rem;max-width:50ch;font-size:1.15rem}
+  .contact .links{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}
+  .contact .btn{border-color:var(--paper);color:var(--paper)}
+  .contact .btn.primary{background:var(--signal);border-color:var(--signal);color:var(--ink)}
+  .contact .btn.primary:hover{background:var(--paper);border-color:var(--paper)}
+  .contact .btn.ghost:hover{background:var(--paper);color:var(--ink)}
+  footer{padding:0 0 2.5rem;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav class="nav" aria-label="Main">
+    <a class="me" href="#top">Ritik</a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#problem-solving">Problem solving</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero" id="top">
+    <div>
+      <h1>I build the layer between products and models.</h1>
+      <p class="lede">I'm Ritik, an AI engineer in Pune. I spent <strong>two years on backend and agentic systems</strong>: routing LLM calls across providers, agent frameworks, RAG, payments, and the monitoring that keeps them honest. Before that, 800+ DSA problems.</p>
+      <div class="ctas">
+        <a class="btn primary" href="resume.pdf" download>Download resume</a>
+        <a class="btn ghost" href="#contact">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="router" aria-labelledby="router-q">
+      <p class="router-q" id="router-q">What are you hiring for? Pick one and I'll route you.</p>
+      <div class="chips" role="group" aria-label="Choose a route">
+        <button class="chip" data-route="genai" aria-pressed="false">GenAI / agents</button>
+        <button class="chip" data-route="backend" aria-pressed="false">Backend</button>
+        <button class="chip" data-route="dsa" aria-pressed="false">Problem solving</button>
+        <button class="chip" data-route="team" aria-pressed="false">Team fit</button>
+      </div>
+      <div class="trace" id="trace" aria-live="polite"></div>
+      <p class="router-foot">Modelled on aibridge, the LLM router I maintained at 23 Ventures.</p>
+    </div>
+  </header>
+
+  <!-- ================= WORK ================= -->
+  <section class="block" id="work" aria-labelledby="work-h">
+    <div class="block-head">
+      <h2 id="work-h">What I've built</h2>
+      <p>Most of this is production work at 23 Ventures, where I was the sole backend owner on several projects and worked across multiple teams.</p>
+    </div>
+
+    <div class="systems">
+      <article class="sys flag" id="sys-aibridge">
+        <div>
+          <h3>aibridge: one API for every major model provider</h3>
+          <div class="tags"><span class="tag">Flask</span><span class="tag">Celery</span><span class="tag">Redis</span><span class="tag">PostgreSQL</span><span class="tag">Kubernetes</span></div>
+        </div>
+        <div>
+          <p>A multi-provider LLM routing and orchestration service at 23 Ventures. I didn't create it; I maintained and extended it. I added several new providers, made structured outputs reliable with strict JSON validation, and built alerting, including an email wrapper with input validation. I also worked on the multi-provider token counter (custom BPE), a cost audit that checks our rates against LiteLLM and flags drift, and billing, including RBI-compliant Stripe e-mandates with INR/USD routing.</p>
+          <div class="providers" aria-label="Integrated providers">
+            <span>OpenAI</span><span>Anthropic</span><span>Gemini</span><span>Mistral</span><span>DeepSeek</span><span>Grok</span><span>Cohere</span><span>AWS Bedrock</span><span>Azure AI Foundry</span><span>NVIDIA NIM</span><span>Groq</span><span>Cerebras</span><span>OpenRouter</span><span>Kimi</span><span>Alibaba</span><span>Z.AI</span><span>MiniMax</span><span>Meta</span><span>Stability AI</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="sys" id="sys-agents">
+        <h3>Agent framework and multi-agent loop</h3>
+        <p>An agent layer on top of our in-house orchestrator: persona, prompts, instruction set and skills per agent. Multi-agent runs use a brain-as-orchestrator pattern with shared state, three-tier retries and pause/resume checkpoints.</p>
+        <div class="tags"><span class="tag">Orchestration</span><span class="tag">Tool use</span><span class="tag">Prompt design</span></div>
+      </article>
+
+      <article class="sys" id="sys-rag">
+        <h3>Collection RAG</h3>
+        <p>Users pin messages; the pins are embedded in Qdrant, and the assistant answers only from pinned facts. Grounded by design, so it says "I don't know" instead of guessing.</p>
+        <div class="tags"><span class="tag">Qdrant</span><span class="tag">Embeddings</span><span class="tag">Retrieval</span></div>
+      </article>
+
+      <article class="sys" id="sys-monitor">
+        <h3>LLM monitoring</h3>
+        <p>Tracks errors, token cost and usage per model and team, with alerts when something spikes. The dashboard people check before asking "why is the bill up?"</p>
+        <div class="tags"><span class="tag">Observability</span><span class="tag">Cost control</span></div>
+      </article>
+
+      <article class="sys" id="sys-vera">
+        <h3>Scheduler for Vera voice calls</h3>
+        <p>A Redis-backed scheduler that triggers outbound calls for the Vera voice app on time. I also worked through Kafka consumer starvation from blocking retries and proposed a hybrid sync/async design.</p>
+        <div class="tags"><span class="tag">Redis</span><span class="tag">Kafka</span><span class="tag">Celery</span></div>
+      </article>
+
+      <article class="sys" id="sys-stripe">
+        <h3>Payments, end to end</h3>
+        <p>I owned the Stripe integration from design to production: subscriptions, India e-mandates, trial logic and mandate-status gating.</p>
+        <div class="tags"><span class="tag">Stripe</span><span class="tag">Webhooks</span></div>
+      </article>
+
+      <article class="sys" id="sys-reel">
+        <h3>ReelMemory (side project)</h3>
+        <p>Paste an Instagram Reel and AI pulls out the places, dishes and prices into a searchable map of spots you actually want to visit. Building the first version now.</p>
+        <div class="tags"><span class="tag">Multimodal LLMs</span><span class="tag">Maps</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= EXPERIENCE ================= -->
+  <section class="block" id="experience" aria-labelledby="exp-h">
+    <div class="block-head">
+      <h2 id="exp-h">Experience</h2>
+      <p>I started in backend engineering and moved into GenAI as the work moved there. The fundamentals carried over.</p>
+    </div>
+    <ol class="timeline" reversed>
+      <li class="now">
+        <span class="when">Feb 2025 – Oct 2026</span>
+        <div>
+          <h3>Member of Technical Staff · <span class="org">23 Ventures</span></h3>
+          <p>Joined as a contractor working independently on a project, converted to full time after six months. Built agentic AI systems across products including the Axyen AI platform and the Scalaix agent framework.</p>
+        </div>
+      </li>
+      <li>
+        <span class="when">2024</span>
+        <div>
+          <h3>Early-stage products</h3>
+          <p>Worked on stealth-stage products, including Rakshil, a unified health record any doctor can view. I made the architecture decisions.</p>
+        </div>
+      </li>
+      <li>
+        <span class="when">Jul – Dec 2023</span>
+        <div>
+          <h3>Software Engineer · <span class="org">miniOrange</span></h3>
+          <p>Backend engineering. <!-- TODO: add one line on what you built here --></p>
+        </div>
+      </li>
+      <li>
+        <span class="when">Jul 2022 – Jun 2023</span>
+        <div>
+          <h3>Intern · <span class="org">PTC</span></h3>
+          <p>Year-long engineering internship.</p>
+        </div>
+      </li>
+      <li>
+        <span class="when">Education</span>
+        <div>
+          <h3>BE, Computer Science · <span class="org">Sinhgad Academy of Engineering</span></h3>
+          <p>CGPA 8.9. Co-authored a published paper on blockchain-based ration distribution with QR and face detection (IJIRCCE, 2022).</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ================= PROBLEM SOLVING ================= -->
+  <section class="block" id="problem-solving" aria-labelledby="ps-h">
+    <div class="block-head">
+      <h2 id="ps-h">Problem solving</h2>
+      <p>Competitive programming is where I learned to think about edge cases and complexity before writing code. It still shows up in how I design systems.</p>
+    </div>
+    <div class="ps">
+      <div>
+        <div class="count" aria-hidden="true">800+</div>
+        <p class="count-cap"><span class="sr-only">800+ </span>DSA problems solved across LeetCode, CodeChef, HackerRank and other platforms.</p>
+      </div>
+      <ul class="creds">
+        <li><span class="what">Global rank 394, Starters 8 (Div 3, rated)</span><span class="src"><a href="https://www.codechef.com/users/imritk_007" target="_blank" rel="noopener">CodeChef</a></span></li>
+        <li><span class="what">Global rank 546, Starters 15 (Div 3, rated)</span><span class="src"><a href="https://www.codechef.com/users/imritk_007" target="_blank" rel="noopener">CodeChef</a></span></li>
+        <li><span class="what">Problem Solving certificate</span><span class="src"><a href="https://www.hackerrank.com/profile/raoritik220" target="_blank" rel="noopener">HackerRank</a></span></li>
+        <li><span class="what">SQL certificate</span><span class="src"><a href="https://www.hackerrank.com/profile/raoritik220" target="_blank" rel="noopener">HackerRank</a></span></li>
+        <li><span class="what">100 Days badge</span><span class="src"><a href="https://leetcode.com/u/imritik_007/" target="_blank" rel="noopener">LeetCode</a></span></li>
+        <li><span class="what">Cleared certification round</span><span class="src">Infosys</span></li>
+        <li><span class="what">Set the DSA problems for our college tech fest</span><span class="src">HackerRank contest</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================= BEYOND CODE ================= -->
+  <section class="block" id="beyond" aria-labelledby="beyond-h">
+    <div class="block-head">
+      <h2 id="beyond-h">How I work</h2>
+      <p>Anyone can list soft skills. Here's where each one actually came from.</p>
+    </div>
+    <div class="evidence">
+      <div class="ev">
+        <h3>Communication</h3>
+        <p>Wrote and explained the problem set for our annual tech fest so students at every level could compete. I write about engineering too, including my Amazon SDE interview experience.</p>
+      </div>
+      <div class="ev">
+        <h3>Ownership</h3>
+        <p>Sole backend owner on several projects at 23 Ventures. Took payments from a blank page to production without a hand-off.</p>
+      </div>
+      <div class="ev">
+        <h3>Collaboration</h3>
+        <p>Worked across multiple product teams, often as the person turning a product idea into an API other teams build on.</p>
+      </div>
+      <div class="ev">
+        <h3>Consistency</h3>
+        <p>100 straight days of LeetCode and 800+ problems overall. I show up when it's dull as well as when it's exciting.</p>
+      </div>
+      <div class="ev">
+        <h3>Judgement</h3>
+        <p>Made the architecture calls for an early health-tech product, and the cost and retry trade-offs in a router that serves real traffic.</p>
+      </div>
+      <div class="ev">
+        <h3>Learning fast</h3>
+        <p>Went from backend engineer to building agent systems in production in under a year, picking up RAG, Kafka and a dozen provider SDKs along the way.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SKILLS ================= -->
+  <section class="block" id="skills" aria-labelledby="skills-h">
+    <div class="block-head">
+      <h2 id="skills-h">Tools I use</h2>
+      <p>Python is home. The rest is whatever the problem needs.</p>
+    </div>
+    <div class="stack">
+      <div><h3>GenAI</h3><p>Agent orchestration, RAG, tool calling, structured outputs, prompt design, token and cost management, LiteLLM</p></div>
+      <div><h3>Backend</h3><p>Python, Flask, Celery, REST APIs, Stripe, SQLAlchemy</p></div>
+      <div><h3>Data and messaging</h3><p>PostgreSQL, Redis, Kafka, Qdrant, SQL</p></div>
+      <div><h3>Infrastructure</h3><p>Docker, Kubernetes, AWS (Bedrock), Azure AI Foundry</p></div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACT ================= -->
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Building something with LLMs? Let's talk.</h2>
+    <p>I'm looking for AI engineer roles in Pune, Mumbai, Bangalore or remote. Email is the fastest way to reach me.</p>
+    <div class="links">
+      <a class="btn primary" href="mailto:ritikrao474@gmail.com">Email me</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/ritik-rao-a129871a1/" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn ghost" href="https://github.com/Ritikrao-7" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn ghost" href="https://leetcode.com/u/imritik_007/" target="_blank" rel="noopener">LeetCode</a>
+      <a class="btn ghost" href="https://www.codechef.com/users/imritk_007" target="_blank" rel="noopener">CodeChef</a>
+      <a class="btn ghost" href="https://www.hackerrank.com/profile/raoritik220" target="_blank" rel="noopener">HackerRank</a>
+      <a class="btn ghost" href="https://medium.com/@ritikrao474" target="_blank" rel="noopener">Writing</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Ritik, Pune</span>
+    <span>Hand-built, no framework. Deployed on Vercel.</span>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const ROUTES = {
+    intro: [
+      ["route", "incoming: who is Ritik?"],
+      ["", "classifying intent… general"],
+      ["ok", "matched: AI engineer, 2 yrs, Pune"],
+      ["", "backend → GenAI, production agent systems"],
+      ["", "800+ DSA problems, HackerRank certified"],
+      ["out", "pick a route above for details ↑"]
+    ],
+    genai: [
+      ["route", "route: genai  →  agents + LLM infra"],
+      ["", "maintained multi-provider router (19 providers)"],
+      ["", "added providers, strict JSON validation, alerts"],
+      ["", "agent framework on in-house orchestrator"],
+      ["", "multi-agent loop: shared state, retries, checkpoints"],
+      ["", "collection RAG on Qdrant, grounded answers only"],
+      ["ok", "LLM monitoring: errors, tokens, cost alerts"],
+      ["out", "open <a href='#sys-aibridge'>aibridge</a> · <a href='#sys-agents'>agents</a>"]
+    ],
+    backend: [
+      ["route", "route: backend  →  python services"],
+      ["", "flask · celery · redis · kafka · postgres"],
+      ["", "sole backend owner on several projects"],
+      ["", "stripe payments end to end, india e-mandates"],
+      ["", "redis scheduler for vera voice calls"],
+      ["ok", "k8s deploys, debugged nat keepalive drops"],
+      ["out", "open <a href='#sys-stripe'>payments</a> · <a href='#experience'>experience</a>"]
+    ],
+    dsa: [
+      ["route", "route: problem solving"],
+      ["", "800+ problems across platforms"],
+      ["", "codechef starters: global rank 394 and 546"],
+      ["", "hackerrank: problem solving, sql certificates"],
+      ["", "leetcode: 100 days badge"],
+      ["", "infosys certification round: cleared"],
+      ["ok", "set dsa problems for college tech fest"],
+      ["out", "open <a href='#problem-solving'>problem solving</a>"]
+    ],
+    team: [
+      ["route", "route: team fit"],
+      ["", "communication: wrote a tech fest problem set"],
+      ["", "ownership: payments from zero to prod"],
+      ["", "collaboration: worked across product teams"],
+      ["", "learning: backend → agents in under a year"],
+      ["ok", "writes about engineering publicly"],
+      ["out", "open <a href='#beyond'>how I work</a>"]
+    ]
+  };
+
+  const trace = document.getElementById("trace");
+  const chips = document.querySelectorAll(".chip");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let run = 0;
+
+  const line = (kind, text, ms) => {
+    const el = document.createElement("div");
+    el.className = "l";
+    el.innerHTML = `<span class="t">${ms}ms</span><span class="${kind ? "k-" + kind : ""}">${text}</span>`;
+    return el;
+  };
+
+  async function play(name){
+    const id = ++run;
+    trace.innerHTML = "";
+    let ms = 0;
+    for (const [kind, text] of ROUTES[name]) {
+      if (id !== run) return;
+      ms += 40 + Math.floor(Math.random() * 180);
+      trace.appendChild(line(kind, text, ms));
+      if (!reduce) await new Promise(r => setTimeout(r, 230));
+    }
+    if (id === run) {
+      const c = document.createElement("span");
+      c.className = "cursor"; c.setAttribute("aria-hidden", "true");
+      trace.lastChild.lastChild.append(" ", c);
+    }
+  }
+
+  chips.forEach(chip => chip.addEventListener("click", () => {
+    chips.forEach(c => c.setAttribute("aria-pressed", String(c === chip)));
+    play(chip.dataset.route);
+  }));
+
+  play("intro");
+})();
+</script>
+</body>
+</html>
